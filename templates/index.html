@@ -15,7 +15,7 @@
                     <th>URL</th>
                     <th>Short Url</th>
                     <th>Clicks</th>
-                    <th>Active</th>
+                    <th>Status</th>
                     <th>Manage</th>
                 </tr>
             </thead>
@@ -26,7 +26,7 @@
                         <td>{{ row.long_url}}</td>
                         <td>{{ row.short_url }}</td>
                         <td>{{ row.clicks }}</td>
-                        <td>{{ row.active}}</td>
+                        <td><input type="checkbox" {% if row.active %}checked{% endif %} data-toggle="toggle" data-size="small" data-onstyle="success" onchange='changeStatus("{{ row.id }}")'></td>
                         <td>
                             <div class="input-group">
                                 <span class="input-group-btn">
@@ -56,7 +56,7 @@
                         <input type="hidden" name="url-id" value=""/>
                         {{update_form.hidden_tag()}}
                         {{update_form.long_url.label}}
-                        {{update_form.long_url(placeholder="Enter New Long_url", tabindex="2", class="form-control", autocomplete="off")}}
+                        {{update_form.long_url(placeholder="Enter New Long Url", tabindex="2", class="form-control", autocomplete="off")}}
                     </div>
                     <div class="modal-footer">
                         <input type="submit" class="btn btn-primary" value="Update"/>

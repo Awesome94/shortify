@@ -119,7 +119,10 @@ def display(url_short):
     original_url.clicks = original_url.clicks+1
     db.session.add(original_url)
     db.session.commit()
-    return redirect(original_url.long_url)
+    if original_url.active:
+        return redirect(original_url.long_url)
+    else:
+        return render_template('error-Inactive.html')
 
 @app.route('/logout')
 def logout():
@@ -160,21 +163,12 @@ def delete_link():
     db.session.commit()
     return redirect(url_for('create_short'))
 
-# @app.route('/update/<id>', methods=['GET','POST'])
-# def update_link(id):
-#     # status_mapping = {"true": True, "false": False}
-#     update_form = forms.UpdateUrlForm()
-#     title = update_form.title.data
-#     # status = update_form.status.data
-#     new_long_url = update_form.long_url.data
-
-#     url = db.session.query(UrlSchema).filter_by(id=id).first()
-#     url.long_url = new_long_url
-#     # url.status = status_mapping[status]
-#     url.title = title
-#     db.session.add(url)
-#     db.session.commit()
-#     return redirect(url_for('create_short'))]
+@app.route('/change-status/<url_id>')
+def change_status(url_id):
+    url = UrlSchema.query.filter_by(id=url_id).first()
+    url.active = not url.active
+    db.session.commit()
+    return redirect(url_for('create_short'))
 
 @app.route('/edit/', methods=['GET','POST'])
 @login_required
@@ -187,6 +181,8 @@ def update():
         db.session.commit()
         flash('Your changes have been saved.')
     return redirect (url_for('create_short'))
+
+
 
 
 

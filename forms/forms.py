@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, IntegerField, RadioField, SubmitField
+from wtforms import StringField, PasswordField, IntegerField, BooleanField, SubmitField
 from wtforms.validators import (DataRequired, Regexp, ValidationError, Email, url,
                                 length, EqualTo)
 from wtforms.fields.html5 import URLField
@@ -42,7 +42,7 @@ class UrlForm(FlaskForm):
     vanity_string = StringField('vanity string')
     submit = SubmitField('Shorten')
     # clicks = IntegerFIeld('Clicks')
-    # Active = RadioField('Active')
+    status = BooleanField()
 
 class UpdateUrlForm(FlaskForm):
     # title = StringField('New Url Title')

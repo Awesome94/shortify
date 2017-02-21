@@ -29,3 +29,9 @@ $(document).ready(function(){
 	$('.delete-button').on('click', onDeleteClick);
 
 });
+
+function changeStatus(id){
+	$.get( "/change-status/" + id, function( data ) {
+		console.log( "Status was changed." );
+	});
+}
