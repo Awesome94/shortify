@@ -1,0 +1,150 @@
+{% if current_user.is_authenticated %} 
+{% extends "layout2.html" %} 
+{% else %} 
+{% extends "layout.html" %} 
+{% endif %} 
+{% block content %} 
+{% include "urlshorten.html" %} 
+{% if current_user.is_authenticated %}
+
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>URL</th>
+                    <th>Short Url</th>
+                    <th>Clicks</th>
+                    <th>Active</th>
+                    <th>Manage</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in data.items %}
+                    <tr>
+                        <td>{{ row.id }}</td>
+                        <td>{{ row.long_url}}</td>
+                        <td>{{ row.short_url }}</td>
+                        <td>{{ row.clicks }}</td>
+                        <td>{{ row.active}}</td>
+                        <td>
+                            <div class="input-group">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default btn-sm edit-button" data-id="{{row.id}}" data-toggle="modal"> <i class="glyphicon glyphicon-edit"></i></button>
+
+                                    <button class="btn btn-default btn-sm delete-button" data-id="{{row.id}}" data-toggle="modal"> <i class="glyphicon glyphicon-trash"></i></button>
+                                </span>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>                  
+    </div>
+
+    <!-- Edit Modal -->
+    <div id="edit-modal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Edit URL</h4>
+                </div>
+                <form method="post" action="{{url_for('update')}}">
+                    <div class="modal-body">
+                        <input type="hidden" name="url-id" value=""/>
+                        {{update_form.hidden_tag()}}
+                        {{update_form.long_url.label}}
+                        {{update_form.long_url(placeholder="Enter New Long_url", tabindex="2", class="form-control", autocomplete="off")}}
+                    </div>
+                    <div class="modal-footer">
+                        <input type="submit" class="btn btn-primary" value="Update"/>
+                        <button type="button" class="btn btn-default" data-dismiss='modal'>Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!--Delete modal-->
+    <div class="modal fade" id="delete-modal"  role="dialog">
+        <div class="modal-dialog">
+        <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <!--<button type="button" class="close" data-dismiss="modal">&times;</button>-->
+                        <h4 class="modal-title">Delete URL </h4>
+                </div>
+
+            <form method="post" action="{{url_for('delete_link')}}">
+                <div class="modal-body">
+                    <p>Confirm that you want to delete this URL?</p>
+                    <input type="hidden" name="link-id" value=""/>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                    <button type="button" class="btn btn-default" data-dismiss='modal'>Cancel</button>
+                </div>
+            </form>
+            </div>
+        </div>
+    </div>
+
+    {% if data.has_prev %}
+    <a href="{{ url_for('create_short', page=data.prev_num) }}">&lt;&lt; Newer data</a>{% else %}&lt;&lt; Newer data{% endif
+    %} |{% if data.has_next %}
+    <a href="{{ url_for('create_short', page=data.next_num) }}">Older data &gt;&gt;</a> {% else %}Older data &gt;&gt; {% endif %}
+{% else %}
+<!--This is the content that is viewed by user who is not logged in, Also known as Anonymous User-->
+<!--Frequent users-->
+<br>
+<div class="container">
+    <ul class="nav nav-tabs">
+        <li class="active"><a data-toggle="tab" href="#home">Popular Links</a></li>
+        <li><a data-toggle="tab" href="#menu1">Recently Added</a></li>
+        <li><a data-toggle="tab" href="#menu2">Top users</a></li>
+    </ul>
+</div>
+<div class="tab-content">
+    <div id="home" class="tab-pane fade in active">
+        <br> {% for link in pop_link %}
+        <div class="container">
+            <div class="panel panel-default">
+                <div class="panel-heading">{{ link.url_title }}</div>
+                <div class="panel-body">{{ link.url }}</div>
+                <div class="panel-body"> Clicks: <span class="badge"> {{ link.clicks }} </span></div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <!--home end-->
+    <div id="menu1" class="tab-pane fade">
+        <br> {% for link in recent_links%}
+        <div class="container">
+            <div class="panel panel-default">
+                <div class="panel-heading">{{ link.url_title }}</div>
+                <div class="panel-body">{{ link.rec_link }}</div>
+                <div class="panel-footer">Created: {{ link.date_added }}</div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <!--menu1 end-->
+    <div id="menu2" class="tab-pane fade">
+        <br> {% for user in frequent_users %}
+        <div class="container">
+            <div class="panel panel-default">
+                <div class="panel-heading">Name : {{ user.name.upper() }}</div>
+                <div class="panel-body">Links Created : {{ user.count }}</div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+<!--menu2 end-->
+{% include "login modal.html" %}
+</body>
+
+</html>
+{% endif %} {% endblock %}
