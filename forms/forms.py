@@ -3,17 +3,8 @@ from wtforms import StringField, PasswordField, IntegerField, BooleanField, Subm
 from wtforms.validators import (DataRequired, Regexp, ValidationError, Email, url,
                                 length, EqualTo)
 from wtforms.fields.html5 import URLField
-from models.models import User
 
-# def name_exists(forms, field):
-#     user = User.query.filter_by(username=field.data)
-#     if user:
-#         raise ValidationError('User with that name already exists')
 
-# def email_exists(forms, field):
-#     user = User.query.filter_by(email=field.data)
-#     if user:
-#         raise ValidationError('User with that email already exists')
 
 class RegisterForm(FlaskForm):
     # creating a registration form with the relevant fields required to register a user
@@ -27,8 +18,17 @@ class RegisterForm(FlaskForm):
 
     password2 = PasswordField(
         'confirm Password',
-        validators=[DataRequired()]
-    )
+        validators=[DataRequired()])
+
+    # def validate(self):
+    #     initial_validation = super(RegisterForm, self).validate()
+    #     if not initial_validation:
+    #         return False
+    #     user = User.query.filter_by(email=self.email.data).first()
+    #     if user:
+    #         self.email.errors.append("Email already registered")
+    #         return False
+    #     return True
 
 class LoginForm(FlaskForm):
     email =  StringField('Email*', validators=[DataRequired(), Email()])

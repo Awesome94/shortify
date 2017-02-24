@@ -1,7 +1,4 @@
-from flask import Flask, render_template, flash, redirect, session, url_for, request, g, jsonify
-from app import app
-from forms import forms
-from models import User, UrlSchema, db
+from flask import render_template, flash, redirect, session, url_for, request, g, jsonify
 import short_url as sh_url
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from sqlalchemy.sql import func, desc
@@ -15,10 +12,14 @@ import lxml.html
 # from app import SITE_URL
 from config import POSTS_PER_PAGE
 
+from app import app
+from forms.forms import UrlForm, LoginForm, UpdateUrlForm, RegisterForm
+# from forms. import UrlForm, LoginForm, UpdateUrlForm, RegisterForm
+# from models.models import User, UrlSchema
+from functools import wraps
+from models.models import User, UrlSchema, db
 
- 
-db.create_all()
-db.session.commit()
+
 login_manager = LoginManager()
 login_manager.init_app(app)
 
@@ -28,16 +29,23 @@ def load_user(user_id):
     #loads the user when needed for login.
     return User.query.get(int(user_id))
 
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if current_user.is_anonymous:
+            return redirect(url_for('create_short', next=request.url))
+        return f(*args, **kwargs)
+    return decorated_function
 
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/index', methods=['GET', 'POST'])
 @app.route('/index/<int:page>', methods=['GET', 'POST'])
 def create_short(page=1):
     '''creating a short url from a given long url'''
-    login_form = forms.LoginForm()
-    update_form = forms.UpdateUrlForm()
-    register_form = forms.RegisterForm()
-    form = forms.UrlForm()
+    login_form = LoginForm()
+    update_form = UpdateUrlForm()
+    register_form = RegisterForm()
+    form = UrlForm()
     url = form.url.data 
     # print (url)
     custom_url = form.vanity_string.data
@@ -79,11 +87,11 @@ def create_short(page=1):
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     '''This functionallows users to register. Heence will add users to the system.'''
-    register_form = forms.RegisterForm()
+    register_form = RegisterForm()
     username = register_form.username.data
     email = register_form.email.data
     password = register_form.password.data
-    if request.method == 'POST' and form.validate_on_submit():
+    if request.method == 'POST' and register_form.validate_on_submit():
         new_user=User(username, email, password)
         db.session.add(new_user)
         db.session.commit()
@@ -93,11 +101,10 @@ def register():
 
 @app.route('/login', methods=['POST','GET'])
 def login():
-    login_form = forms.LoginForm()
+    login_form = LoginForm()
     if request.method =='POST' and login_form.validate():
         email = login_form.email.data
         password = login_form.password.data
-        print('steve')
         user = User.query.filter_by(email=email).first()
         
         if user and user.password == password:
@@ -105,12 +112,9 @@ def login():
             g.user = user
            
             return redirect (url_for('create_short'))
-             #upon login, users will be directed to the url for 'create_short'
-    return render_template('login.html', login_form=login_form)
+             #upon login, users will be directed to the url for 'create_short' with different priviledges
+    return redirect (url_for('create_short'))
 
-# @app.route('logged_in', methods=['GET','POST'])
-# def home():
-#     return render_template('home.html', form=form)
 
 @app.route('/<url_short>')
 def display(url_short):
@@ -125,10 +129,11 @@ def display(url_short):
         return render_template('error-Inactive.html')
 
 @app.route('/logout')
+# @login_required
 def logout():
     logout_user()
     flash("Logged Out Successfully.")
-    return redirect (url_for('login'))
+    return redirect (url_for('create_short'))
 
 def get_frequent_users():
     results = db.session.query(UrlSchema.author_id, 
@@ -140,7 +145,7 @@ def get_frequent_users():
     return data
 
 def get_popular_links():
-     pop_link  = db.session.query(UrlSchema).filter(UrlSchema.clicks>=2).all()
+     pop_link  = db.session.query(UrlSchema).filter(UrlSchema.clicks>=5).all()
      data = []
      for link in pop_link:
          data.append({'url': link.short_url, 'clicks': link.clicks, 'url_title':link.title})
@@ -174,7 +179,7 @@ def change_status(url_id):
 @login_required
 def update():
     id = request.form.get('url-id')
-    update_form = forms.UpdateUrlForm()
+    update_form = UpdateUrlForm()
     if request.method=='POST'and update_form.validate_on_submit():
         url = UrlSchema.query.filter_by(id=id).first()
         url.long_url = update_form.long_url.data

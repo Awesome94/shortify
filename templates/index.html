@@ -1,45 +1,46 @@
-{% if current_user.is_authenticated %} 
-{% extends "layout2.html" %} 
-{% else %} 
 {% extends "layout.html" %} 
-{% endif %} 
 {% block content %} 
-{% include "urlshorten.html" %} 
+ 
 {% if current_user.is_authenticated %}
+    <div class="row">
+        <div class="container">
+            <div class="container">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>URL</th>
+                                <th>Short Url</th>
+                                <th>Clicks</th>
+                                <th>Status</th>
+                                <th>Manage</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for row in data.items %}
+                                <tr>
+                                    <td>{{ row.id }}</td>
+                                    <td>{{ row.long_url}}</td>
+                                    <td>{{ row.short_url }}</td>
+                                    <td>{{ row.clicks }}</td>
+                                    <td><input type="checkbox" {% if row.active %}checked{% endif %} data-toggle="toggle" data-size="small" data-onstyle="success" onchange='changeStatus("{{ row.id }}")'></td>
+                                    <td>
+                                        <div class="input-group">
+                                            <span class="input-group-btn">
+                                                <button class="btn btn-default btn-sm edit-button" data-id="{{row.id}}" data-toggle="modal"> <i class="glyphicon glyphicon-edit"></i></button>
 
-    <div class="table-responsive">
-        <table class="table table-hover">
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>URL</th>
-                    <th>Short Url</th>
-                    <th>Clicks</th>
-                    <th>Status</th>
-                    <th>Manage</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for row in data.items %}
-                    <tr>
-                        <td>{{ row.id }}</td>
-                        <td>{{ row.long_url}}</td>
-                        <td>{{ row.short_url }}</td>
-                        <td>{{ row.clicks }}</td>
-                        <td><input type="checkbox" {% if row.active %}checked{% endif %} data-toggle="toggle" data-size="small" data-onstyle="success" onchange='changeStatus("{{ row.id }}")'></td>
-                        <td>
-                            <div class="input-group">
-                                <span class="input-group-btn">
-                                    <button class="btn btn-default btn-sm edit-button" data-id="{{row.id}}" data-toggle="modal"> <i class="glyphicon glyphicon-edit"></i></button>
-
-                                    <button class="btn btn-default btn-sm delete-button" data-id="{{row.id}}" data-toggle="modal"> <i class="glyphicon glyphicon-trash"></i></button>
-                                </span>
-                            </div>
-                        </td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>                  
+                                                <button class="btn btn-default btn-sm delete-button" data-id="{{row.id}}" data-toggle="modal"> <i class="glyphicon glyphicon-trash"></i></button>
+                                            </span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table> 
+                </div>                
+            </div>
+        </div>
     </div>
 
     <!-- Edit Modal -->
@@ -95,56 +96,59 @@
     <a href="{{ url_for('create_short', page=data.prev_num) }}">&lt;&lt; Newer data</a>{% else %}&lt;&lt; Newer data{% endif
     %} |{% if data.has_next %}
     <a href="{{ url_for('create_short', page=data.next_num) }}">Older data &gt;&gt;</a> {% else %}Older data &gt;&gt; {% endif %}
+
 {% else %}
 <!--This is the content that is viewed by user who is not logged in, Also known as Anonymous User-->
 <!--Frequent users-->
-<br>
-<div class="container">
-    <ul class="nav nav-tabs">
-        <li class="active"><a data-toggle="tab" href="#home">Popular Links</a></li>
-        <li><a data-toggle="tab" href="#menu1">Recently Added</a></li>
-        <li><a data-toggle="tab" href="#menu2">Top users</a></li>
-    </ul>
-</div>
-<div class="tab-content">
-    <div id="home" class="tab-pane fade in active">
-        <br> {% for link in pop_link %}
+    <div class="row">
         <div class="container">
-            <div class="panel panel-default">
-                <div class="panel-heading">{{ link.url_title }}</div>
-                <div class="panel-body">{{ link.url }}</div>
-                <div class="panel-body"> Clicks: <span class="badge"> {{ link.clicks }} </span></div>
+            <div class="row">
+                <div class="container">
+                    <div class="col-sm-8 col-sm-offset-2">
+                        <div>
+                            <ul class="nav nav-tabs">
+                                <li class="active"><a data-toggle="tab" href="#home">Popular Links</a></li>
+                                <li><a data-toggle="tab" href="#menu1">Recently Added</a></li>
+                                <li><a data-toggle="tab" href="#menu2">Top users</a></li>
+                            </ul>
+                        </div>
+                        <div class="tab-content">
+                            <div id="home" class="tab-pane fade in active">
+                                <br> {% for link in pop_link %}
+                                      <div class="panel panel-default">
+                                     <div class="panel-heading">{{ link.url_title }}</div>
+                                <div class="panel-body">{{ link.url }}</div>
+                            <div class="panel-body"> Clicks: <span class="badge"> {{ link.clicks }} </span></div>
+                        </div>
+                    {% endfor %}
+                       </div>
+            <div id="menu1" class="tab-pane fade">
+                    {% for link in recent_links%}
+                    <div class="panel panel-default">
+                        <div class="panel-heading">{{ link.url_title }}</div>
+                            <div class="panel-body">{{ link.rec_link }}</div>
+                        <div class="panel-footer">Created: {{ link.date_added }}</div>
+                    </div>
+                {% endfor %}
+            </div>
+            <div id="menu2" class="tab-pane fade">
+                    {% for user in frequent_users %}
+                    <div class="panel panel-default">
+                        <div class="panel-heading">Name : {{ user.name.upper() }}</div>
+                            <div class="panel-body">Links Created : {{ user.count }}</div>
+                    </div>
+                {% endfor %}
+
+                    </div>
+                </div>
+                
             </div>
         </div>
-        {% endfor %}
     </div>
-    <!--home end-->
-    <div id="menu1" class="tab-pane fade">
-        <br> {% for link in recent_links%}
-        <div class="container">
-            <div class="panel panel-default">
-                <div class="panel-heading">{{ link.url_title }}</div>
-                <div class="panel-body">{{ link.rec_link }}</div>
-                <div class="panel-footer">Created: {{ link.date_added }}</div>
-            </div>
-        </div>
-        {% endfor %}
-    </div>
-    <!--menu1 end-->
-    <div id="menu2" class="tab-pane fade">
-        <br> {% for user in frequent_users %}
-        <div class="container">
-            <div class="panel panel-default">
-                <div class="panel-heading">Name : {{ user.name.upper() }}</div>
-                <div class="panel-body">Links Created : {{ user.count }}</div>
-            </div>
-            {% endfor %}
-        </div>
-    </div>
-</div>
 <!--menu2 end-->
 {% include "login modal.html" %}
 </body>
 
 </html>
+
 {% endif %} {% endblock %}

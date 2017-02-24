@@ -23,3 +23,57 @@
 </body>
 
 </html>
+
+
+
+<!--<div class="row">
+        <div class="col-sm-8">
+            <div class="container">
+            <div class="container">
+                <ul class="nav nav-tabs">
+                    <li class="active"><a data-toggle="tab" href="#home">Popular Links</a></li>
+                    <li><a data-toggle="tab" href="#menu1">Recently Added</a></li>
+                    <li><a data-toggle="tab" href="#menu2">Top users</a></li>
+                </ul>
+            </div>
+            <div class="tab-content">
+                <div id="home" class="tab-pane fade in active">
+                    <br> {% for link in pop_link %}
+                    <div class="container">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">{{ link.url_title }}</div>
+                            <div class="panel-body">{{ link.url }}</div>
+                            <div class="panel-body"> Clicks: <span class="badge"> {{ link.clicks }} </span></div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>-->
+                <!--home end
+                <div id="menu1" class="tab-pane fade">
+                    <br> {% for link in recent_links%}
+                    <div class="container">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">{{ link.url_title }}</div>
+                            <div class="panel-body">{{ link.rec_link }}</div>
+                            <div class="panel-footer">Created: {{ link.date_added }}</div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                <!--menu1 end
+                <div id="menu2" class="tab-pane fade">
+                    <br> {% for user in frequent_users %}
+                    <div class="container">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">Name : {{ user.name.upper() }}</div>
+                            <div class="panel-body">Links Created : {{ user.count }}</div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
+
+    -->
