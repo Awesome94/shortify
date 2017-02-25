@@ -52,37 +52,32 @@ def create_short(page=1):
     current_id = current_user.get_id()
     
     #The Url variable holds the original url data which is passed to generate a short Url
-    data = UrlSchema.query.filter_by(author_id=current_id).paginate(page, POSTS_PER_PAGE, False)
-
-    # get frequent users
-    frequent_users = get_frequent_users()
-    
-    #popular links i.e links with most clicks (above and equal to 3)
-    pop_link = get_popular_links()
-   
-    #latest links added 
-    recent_links = get_recent_links()
+    data = UrlSchema.query.filter_by(author_id=current_id).order_by(desc(UrlSchema.id)).paginate(page, POSTS_PER_PAGE, False)
+    url_short = None
 
     if request.method=='POST'and form.validate_on_submit():
         new_long_url=UrlSchema(url) 
         # t = lxml.html.parse(urlopen(url))
         new_long_url.author_id = current_id
-        new_long_url.timestamp = datetime.datetime.utcnow()
         #adding url title
+        url_title = url.split("/")[2:3]
         # url_title =  (t.find(".//title").text)
-        # new_long_url.title = url_title
+        new_long_url.title = (', '.join(url_title))
+        # last_id_in_db = db.session.query(UrlSchema.author_id, db.func.count(UrlSchema.author_id).label('count'))
+        last_id_in_db =UrlSchema.query.count()
+        new_long_url.short_url = custom_url if custom_url else sh_url.encode_url(last_id_in_db+1)
+        url_short = new_long_url.short_url
         db.session.add(new_long_url)
         db.session.commit()
-        if custom_url:
-            url_short = custom_url
-            new_long_url.short_url=url_short
-            db.session.commit()
-        else:
-            url_short = sh_url.encode_url(new_long_url.id)
-            new_long_url.short_url=url_short
-            db.session.commit()
-        return render_template('index.html', form=form, update_form=update_form, login_form=login_form, url_short=url_short, data=data, pop_link=pop_link, recent_links=recent_links, register_form=register_form)    
-    return render_template('index.html', form=form, update_form=update_form, data=data, frequent_users=frequent_users, pop_link=pop_link, recent_links=recent_links, login_form=login_form, register_form=register_form)
+        form = UrlForm(formdata=None)
+
+    # get frequent users
+    frequent_users = get_frequent_users()
+    #popular links i.e links with most clicks (above and equal to 3)
+    pop_link = get_popular_links()
+    #latest links added 
+    recent_links = get_recent_links()
+    return render_template('index.html', form=form, update_form=update_form, data=data, frequent_users=frequent_users, pop_link=pop_link, url_short=url_short, recent_links=recent_links, login_form=login_form, register_form=register_form)
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -119,6 +114,7 @@ def login():
 @app.route('/<url_short>')
 def display(url_short):
     original_url = UrlSchema.query.filter_by(short_url=url_short).first()
+    # db.session.query(UrlSchema).filter_by(short_url=url_short).first()
     print(original_url)
     original_url.clicks = original_url.clicks+1
     db.session.add(original_url)
@@ -151,13 +147,12 @@ def get_popular_links():
          data.append({'url': link.short_url, 'clicks': link.clicks, 'url_title':link.title})
      return data
 
-@app.route('/rec', methods = ['GET', 'POST'])
 def get_recent_links():
     now = datetime.datetime.now()
     recent_link = db.session.query(UrlSchema).order_by(desc(UrlSchema.id)).limit(5)
     data = []
     for link in recent_link:
-        data.append({'rec_link': link.short_url, 'url_title': link.title, 'date_added': (timeago.format(link.timestamp, datetime.datetime.now())) })
+        data.append({'rec_link': link.short_url, 'url_title': link.title, 'date_added': (timeago.format(link.timestamp)) })
     return data
 
 @app.route('/delete/', methods=['GET','POST'])
@@ -186,31 +181,4 @@ def update():
         db.session.commit()
         flash('Your changes have been saved.')
     return redirect (url_for('create_short'))
-
-
-
-
-
-            
-        
-    
-    
-# @app.route('/tyto', methods=['GET','POST'])
-# def urltitle():
-#     title = db.session.query(UrlSchema).all()    
-#     #fetch html
-#     data = []
-#     for titles in title:
-#         source = urllib.request.urlopen(titles.long_url)
-#         BS = BeautifulSoup(source)
-#         Heading = (BS.find('title').text)
-#         data.append({'title': Heading})
-#     print (data)
-#     return "yos"
-    # #parse with BeautifulSoup
-    
-    # #create a variable  for the title in the URL
-   
-    # print (Heading)
-    # return "Heading"
 

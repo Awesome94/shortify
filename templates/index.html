@@ -2,16 +2,18 @@
 {% block content %} 
  
 {% if current_user.is_authenticated %}
+<br>
     <div class="row">
+    <div class="con1 col-xs-1"> </div>
         <div class="container">
-            <div class="container">
+            <div class="container col-xs-10">
+                <div class="con1 col-xs-1"></div>
                 <div class="table-responsive">
                     <table class="table table-hover">
                         <thead>
                             <tr>
-                                <th>#</th>
                                 <th>URL</th>
-                                <th>Short Url</th>
+                                <th>Vanity String</th>
                                 <th>Clicks</th>
                                 <th>Status</th>
                                 <th>Manage</th>
@@ -20,8 +22,8 @@
                         <tbody>
                             {% for row in data.items %}
                                 <tr>
-                                    <td>{{ row.id }}</td>
-                                    <td>{{ row.long_url}}</td>
+                                    <!--<td>localhost:5000/{{ row.short_url}}</td>-->
+                                    <td>{{ row.title }}</td>
                                     <td>{{ row.short_url }}</td>
                                     <td>{{ row.clicks }}</td>
                                     <td><input type="checkbox" {% if row.active %}checked{% endif %} data-toggle="toggle" data-size="small" data-onstyle="success" onchange='changeStatus("{{ row.id }}")'></td>
@@ -93,9 +95,9 @@
     </div>
 
     {% if data.has_prev %}
-    <a href="{{ url_for('create_short', page=data.prev_num) }}">&lt;&lt; Newer data</a>{% else %}&lt;&lt; Newer data{% endif
+    <a href="{{ url_for('create_short', page=data.prev_num) }}">&lt;&lt; Previous</a>{% else %}&lt;&lt;Previous{% endif
     %} |{% if data.has_next %}
-    <a href="{{ url_for('create_short', page=data.next_num) }}">Older data &gt;&gt;</a> {% else %}Older data &gt;&gt; {% endif %}
+    <a href="{{ url_for('create_short', page=data.next_num) }}">Next &gt;&gt;</a> {% else %}Next &gt;&gt; {% endif %}
 
 {% else %}
 <!--This is the content that is viewed by user who is not logged in, Also known as Anonymous User-->

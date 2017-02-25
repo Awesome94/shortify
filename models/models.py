@@ -2,6 +2,7 @@ from marshmallow_jsonapi import Schema, fields
 from marshmallow import validate
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.exc import SQLAlchemyError
+import datetime
 
 from app import app
 from flask_login import LoginManager, UserMixin
@@ -81,7 +82,7 @@ class UrlSchema(db.Model):
     clicks = db.Column(db.Integer, default=0)
     active = db.Column(db.Boolean, default=True, nullable=False)
     author_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    timestamp = db.Column(db.DateTime)
+    timestamp = db.Column(db.DateTime, default=datetime.datetime.now())
 
    
     def __init__(self, long_url):

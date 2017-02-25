@@ -4,7 +4,7 @@
 		<div class="modal-content login-modal">
 			<div class="modal-header login-modal-header">
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-				<h4 class="modal-title text-center" id="loginModalLabel">Log in or Register to create a free account</h4>
+				<h4 class="modal-title text-center" id="loginModalLabel">Log in.</h4>
 			</div>
 			<div class="modal-body">
 				<div class="text-center">
@@ -13,7 +13,6 @@
 						<ul class="nav nav-tabs" role="tablist">
 							<li role="presentation"><a id="signin-taba" href="#login" aria-controls="login" role="tab" data-toggle="tab">Log In</a></li>
 							<!--<li role="presentation" class="active"><a id="signin-taba" href="#home" aria-controls="home" role="tab" data-toggle="tab">Log In</a></li>-->
-							<li role="presentation"><a id="signup-taba" href="#profile" aria-controls="profile" role="tab" data-toggle="tab">Register</a></li>
 						</ul>
 
 						<!-- Tab panes -->
@@ -41,50 +40,7 @@
 </form>
 </div>
 
-<!--REGISTER-->
-<div role="tabpanel" class="tab-pane" id="profile">
-	&nbsp;&nbsp;
-	<span id="registration_fail" class="response_error" style="display: none;">Registration failed, please try again.</span>
-<div class="clearfix"></div>
-<form>
-	<form action="{{ url_for('register') }}" method="post">
-	{{ register_form.hidden_tag() }}
-	<div class="form-group">
-		<div class="input-group">
-			{{ register_form.usernamelabel}}
-			<div class="input-group-addon"><i class="fa fa-user"></i></div>
-			<input type="text" class="form-control" id="username" placeholder="Username">
-		</div>
-		<span class="help-block has-error" data-error='0' id="username-error"></span>
-	</div>
-	<div class="form-group">
-		<div class="input-group">
-			<div class="input-group-addon"><i class="fa fa-at"></i></div>
-			<input type="text" class="form-control" id="remail" placeholder="Email">
-		</div>
-		<span class="help-block has-error" data-error='0' id="remail-error"></span>
-	</div>
-	<div class="form-group">
-		<div class="input-group">
-			<div class="input-group-addon"><i class="fa fa-user"></i></div>
-			<input type="password" class="form-control" id="password" placeholder="Password">
-		</div>
-		<span class="help-block has-error" data-error='0' id="password-error"></span>
-	</div>
-	<div class="form-group">
-		<div class="input-group">
-			<div class="input-group-addon"><i class="fa fa-user"></i></div>
-			<input type="password" class="form-control" id="password" placeholder="Confirm Password">
-		</div>
-		<span class="help-block has-error" data-error='0' id="password-error"></span>
-	</div>
 
-
-<button type="submit" id="submit" class="btn btn-block bt-login" data-loading-text="Registering....">Register</button>
-	<div class="clearfix"></div>
-
-</form>
-</div>
 </div>
 </div>
 

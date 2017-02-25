@@ -19,6 +19,8 @@ class RegisterForm(FlaskForm):
     password2 = PasswordField(
         'confirm Password',
         validators=[DataRequired()])
+    
+    submit = SubmitField('Register')
 
     # def validate(self):
     #     initial_validation = super(RegisterForm, self).validate()
@@ -41,7 +43,6 @@ class UrlForm(FlaskForm):
     shorturl = StringField('Short Url')
     vanity_string = StringField('vanity string')
     submit = SubmitField('Shorten')
-    # clicks = IntegerFIeld('Clicks')
     status = BooleanField()
 
 class UpdateUrlForm(FlaskForm):

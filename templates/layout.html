@@ -18,7 +18,7 @@
     <nav class="navbar navbar-inverse">
         <div class="container-fluid">
             <div class="navbar-header">
-                <a class="navbar-brand" href="#"><h4>shortify</h4></a>
+                <a class="navbar-brand text-center" href="#" ><h4>Shortify</h4></a>
             </div>
              <div class="collapse navbar-collapse" id="myNavbar">
                 <ul class="nav navbar-nav navbar-right">
@@ -26,6 +26,7 @@
                     <li><a href="{{ url_for('logout')}}">Logout</a></li>
                     {% else %}
                     <li><a href="#"  data-target="#loginModal"  data-toggle="modal"><span class="glyphicon glyphicon-log-in"></span>Login</a></li>
+                    <li><a href="{{ url_for('register')}}"<span class="glyphicon glyphicon-pencil"></span>Register</a></li>
                     {% endif %}
                 </ul>
             </div>
@@ -39,8 +40,11 @@
       <div class="item active">
         <!--<img src="https://placehold.it/1200x550?text=Awesome" alt="Image">-->
         <img src="{{ url_for('static', filename='images/back.jpg') }}" alt="Image">
-        <div class="carousel-caption">
+        <div class="carousel-caption" style="top: 20%;">
           <form action= '/' method="post"  >
+          <h1> Shortify</h1>
+    
+          <h3> More than Just a Url Shortener</h3>
            <div class="input-group">
                     {{  form.hidden_tag() }}
                     {{  form.url(class="form-control input-lg", placeholder="Long URLs") }}
@@ -68,12 +72,12 @@
  </div>
 </div>
   
-
-
-
     <div class={% if current_user.is_authenticated %} page2 {% else %} page {% endif %}>
         {% block content %} {% endblock %}
-    </div>
-</body>
-
+</div>
+    <br>
+     <footer class="container-fluid text-center">
+             <p>copyright Awesome</p>
+        </footer>
+    </body>
 </html>

@@ -1,0 +1,93 @@
+
+
+{% block content %}
+  <h1>Register.</h1>
+  <h6> Fill in your details.</h6>
+  <a href="{{ url_for('create_short') }}"><button2 type="submit">HOME</button2></a>
+ 
+<style>
+input[type=text], input[type=email], input[type=password] {
+    width: 50%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 2px solid #ccc;
+    
+    text-align: center;
+}
+
+button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    cursor: pointer;
+    width: 50%;
+}
+h1 {
+    color: black;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-size: 400%;
+    text-shadow: 1px 1px black;
+    text-align: center;
+}
+h6 {
+    text-align: center;
+}
+
+button2 {
+    background-color: green ;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    top: 0px;
+    position: absolute;
+    right: 0px
+    
+}
+
+
+.container { 
+    float: right;
+    padding: 20px;
+}
+
+span.psw {
+    float: right;
+    padding-top: 16px;
+}
+
+
+</style>
+  <form action="{{ url_for('register') }}" method=post>
+   <div class="con1 col-xs-2"> </div>
+    <div class="container ">
+    <div class="con1 col-xs-2"> </div>
+    
+ {{ register_form.hidden_tag() }}
+
+
+
+{{ register_form.username(placeholder="Enter Username", tabindex="2", class="form-control", autocomplete="off") }}  
+
+    
+{{ register_form.email(placeholder="Enter Email", tabindex="2", class="form-control", autocomplete="off") }}
+    
+
+{{ register_form.password(placeholder="Password", tabindex="2", class="form-control", autocomplete="off") }}  
+
+
+
+{{ register_form.password2(placeholder="Confirm Password", tabindex="2", class="form-control", autocomplete="off") }} 
+   
+
+
+<button type="submit">Register</button>
+     
+    
+</div>
+</div>
+  </form>
+{% endblock %}
+
