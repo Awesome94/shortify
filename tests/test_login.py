@@ -2,7 +2,7 @@ from .test_base import BaseTestConfig
 # from shortify.models import db
 # from config import basedir
 from flask import url_for
-from app import db
+
 from models.models import User 
 
 class UserViewTests(BaseTestConfig):
