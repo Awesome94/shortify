@@ -1,5 +1,6 @@
 from flask import Flask, Blueprint, request, jsonify, make_response
-from models import User, UsersSchema, db, UrlSchema, LinkSchema
+from models.models import User, UsersSchema, db, UrlSchema, LinkSchema
+# from models.models import UsersSchema, db, LinkSchema
 from flask_restful import Resource, Api
 from marshmallow import ValidationError
 from app import app
@@ -7,23 +8,24 @@ from app import app
 
 # app = Flask(__name__)
 api = Api(app)
-
+usschema = UsersSchema()
+urschema = LinkSchema()
 
 class UsersList(Resource):
     def get(self):
         users_query = User.query.all()
-        results = schema.dump(users_query, many=True).data
+        results = usschema.dump(users_query, many=True).data
         return results
     
     def post(self):
         raw_dict = request.get_json(force=True)
         try:
-            schema.validate(raw_dict)
+            usschema.validate(raw_dict)
             user_dict = raw_dict['data']['attributes']
             user = User(user_dict['email'], user_dict['name'],user_dict['is_active'])
             user.add(user)            
             query = User.query.get(user.id)
-            results = schema.dump(query).data                
+            results = usschema.dump(query).data                
             return results, 201
         
         except ValidationError as err:
@@ -40,7 +42,7 @@ class UsersList(Resource):
 class UsersUpdate(Resource):
     def get(self, id):
         user_query = User.query.get_or_404(id)
-        result = schema.dump(user_query).data
+        result = usschema.dump(user_query).data
         return result
 
     def patch(self, id):
@@ -100,6 +102,7 @@ api.add_resource(HelloWorld, '/')
 
 # api.add_resource(CreateUser, '/')
 api.add_resource(UsersList, '/users')
+# api.add_resource(UsersUpdate, '/update')
 
 if __name__=='__main__':
     app.run(debug=True) 

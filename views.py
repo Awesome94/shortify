@@ -9,20 +9,16 @@ from bs4 import BeautifulSoup
 import ssl
 from urllib.request import urlopen
 import lxml.html
-# from app import SITE_URL
 from config import POSTS_PER_PAGE
-
 from app import app
 from forms.forms import UrlForm, LoginForm, UpdateUrlForm, RegisterForm
-# from forms. import UrlForm, LoginForm, UpdateUrlForm, RegisterForm
-# from models.models import User, UrlSchema
+from models.models import User, UrlSchema, db, LinkSchema, UsersSchema
 from functools import wraps
-from models.models import User, UrlSchema, db
+# from models import User, UrlSchema, db
 
 
 login_manager = LoginManager()
 login_manager.init_app(app)
-
 
 @login_manager.user_loader
 def load_user(user_id):
