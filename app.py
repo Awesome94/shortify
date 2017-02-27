@@ -13,4 +13,4 @@ from views import *
 # from models import User, UrlSchema
 
 if __name__ == '__main__':
-    app.run()
+    app.run(host='0.0.0.0')
