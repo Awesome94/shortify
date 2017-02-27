@@ -2,7 +2,7 @@
 *.sqlite
 .DS_Store
 .coverage
-env
+.env
 venv
 migrations
 tmp
