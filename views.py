@@ -53,17 +53,15 @@ def create_short(page=1):
 
     if request.method=='POST'and form.validate_on_submit():
         new_long_url=UrlSchema(url) 
-        # t = lxml.html.parse(urlopen(url))
-        new_long_url.author_id = current_id
-        #adding url title
-        url_title = url.split("/")[2:3]
-        # url_title =  (t.find(".//title").text)
-        new_long_url.title = (', '.join(url_title))
-        # last_id_in_db = db.session.query(UrlSchema.author_id, db.func.count(UrlSchema.author_id).label('count'))
-        last_id_in_db =UrlSchema.query.count()
-        new_long_url.short_url = custom_url if custom_url else sh_url.encode_url(last_id_in_db+1)
-        url_short = new_long_url.short_url
         db.session.add(new_long_url)
+        new_long_url.author_id = current_id
+        #adding url title by spliting the oringinal long url
+        url_title = url.split("/")[2:3]
+        """removing curly brackets from the url title """
+        new_long_url.title = (', '.join(url_title))
+       # if there is no custom url the short url will be genrated randomly
+        new_long_url.short_url = custom_url if custom_url else sh_url.encode_url(new_long_url.id)
+        url_short = new_long_url.short_url
         db.session.commit()
         form = UrlForm(formdata=None)
 
