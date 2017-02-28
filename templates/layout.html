@@ -23,6 +23,7 @@
              <div class="collapse navbar-collapse" id="myNavbar">
                 <ul class="nav navbar-nav navbar-right">
                     {% if current_user.is_authenticated %}
+                    <li><a href="#">Karibu {{current_user.username.upper()}} </a></li>
                     <li><a href="{{ url_for('logout')}}">Logout</a></li>
                     {% else %}
                     <li><a href="#"  data-target="#loginModal"  data-toggle="modal"><span class="glyphicon glyphicon-log-in"></span>Login</a></li>
@@ -61,6 +62,24 @@
                 {% endif %}
                 </form>
                 <br>
+{% with errors = get_flashed_messages(category_filter=["error"]) %}
+{% if errors %}
+<div class="alert alert-danger">
+  <a class="close" href="#">×</a>
+  <ul>
+    {%- for msg in errors %}
+    <li>{{ msg }}</li>
+    {% endfor -%}
+    {% else %}
+    <div class="flashes">
+  {% for message in get_flashed_messages()%}
+    {{ message }}
+  {% endfor %}
+</div>
+  </ul>
+</div>
+{% endif %}
+{% endwith %}
  <div class="row" >
     <div class = "shorturl">
         {% if url_short %}
@@ -71,10 +90,11 @@
   </div>
  </div>
 </div>
-  
+ 
     <div class={% if current_user.is_authenticated %} page2 {% else %} page {% endif %}>
-        {% block content %} {% endblock %}
-</div>
+        {% block content %} 
+        {% endblock %}
+    </div>
     <br>
      <footer class="container-fluid text-center">
              <p>copyright Awesome</p>
