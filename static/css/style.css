@@ -129,3 +129,19 @@ h2{
     margin-top: -100px;
     margin-left: -200px;
 }
+
+
+.flash {
+    animation-name: flash;
+    font-size: 35px;
+    animation-duration: 0.2s;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+    animation-play-state: running;
+}
+
+@keyframes flash {
+    from {color: red;}
+    to {color: white;}
+}
