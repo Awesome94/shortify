@@ -1,20 +1,14 @@
-from flask import render_template, flash, redirect, session, url_for, request, g, jsonify
+from flask import render_template, flash, redirect, session, url_for, request, g, jsonify, Markup
 import short_url as sh_url
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from sqlalchemy.sql import func, desc
 import timeago, datetime
-import urllib.request
-from urllib.request import urlopen
 from bs4 import BeautifulSoup
-import ssl
-from urllib.request import urlopen
-import lxml.html
 from config import POSTS_PER_PAGE
 from app import app
 from forms.forms import UrlForm, LoginForm, UpdateUrlForm, RegisterForm
 from models.models import User, UrlSchema, db, LinkSchema, UsersSchema
 from functools import wraps
-# from models import User, UrlSchema, db
 
 
 login_manager = LoginManager()
@@ -52,20 +46,22 @@ def create_short(page=1):
     url_short = None
 
     if request.method=='POST' and form.validate_on_submit():
-        new_long_url=UrlSchema(url) 
-        db.session.add(new_long_url)
-        db.session.commit()
-        new_long_url.author_id = current_id
-        #adding url title by spliting the oringinal long url
-        url_title = url.split("/")[2:3]
-        """removing curly brackets from the url title """
-        new_long_url.title = (', '.join(url_title))
-        # import ipdb; ipdb.set_trace()
-       # if there is no custom url the short url will be genrated randomly
-        new_long_url.short_url = custom_url if custom_url else sh_url.encode_url(new_long_url.id)
-        url_short = new_long_url.short_url
-        db.session.commit()
-        form = UrlForm(formdata=None)
+        if len(url)>100:
+            flash("Invalid entry Url too long!!!.", 'error')
+        else:                                
+            new_long_url=UrlSchema(url) 
+            db.session.add(new_long_url)
+            db.session.commit()
+            new_long_url.author_id = current_id
+            #adding url title by spliting the original long url
+            url_title = url.split("/")[2:3]
+            """removing curly brackets from the url title """
+            new_long_url.title = (', '.join(url_title))
+            # if there is no custom url the short url will be genrated randomly
+            new_long_url.short_url = custom_url if custom_url else sh_url.encode_url(new_long_url.id)
+            url_short = new_long_url.short_url
+            db.session.commit()
+            form = UrlForm(formdata=None)
 
     # get frequent users
     frequent_users = get_frequent_users()
@@ -86,7 +82,10 @@ def register():
         new_user=User(username, email, password)
         db.session.add(new_user)
         db.session.commit()
+        flash('Registration successful')
         return redirect (url_for('create_short'))
+    else:
+        flash("Make sure all fields are filled with valid data")    
     return render_template('register.html', register_form=register_form)
 
 
@@ -101,14 +100,17 @@ def login():
         if user and user.password == password:
             login_user(user)
             g.user = user
-           
+            message = Markup("<h5>logged in successfully</h5>")
+            flash(message)
             return redirect (url_for('create_short'))
-             #upon login, users will be directed to the url for 'create_short' with different priviledges
+        else:
+            flash('Invalid credentials Try again','error')
     return redirect (url_for('create_short'))
 
 
 @app.route('/<url_short>')
 def display(url_short):
+    # Redirects the short Url to the original URL
     original_url = UrlSchema.query.filter_by(short_url=url_short).first()
     # db.session.query(UrlSchema).filter_by(short_url=url_short).first()
     print(original_url)
@@ -124,10 +126,12 @@ def display(url_short):
 # @login_required
 def logout():
     logout_user()
-    flash("Logged Out Successfully.")
+    message = Markup("<h5>Logged Out Successfully.</h5>")
+    flash (message)
     return redirect (url_for('create_short'))
 
 def get_frequent_users():
+    # Returns most frequent or influential users depending on the number of urls they have shortened.
     results = db.session.query(UrlSchema.author_id, 
         db.func.count(UrlSchema.author_id).label('count')).filter(UrlSchema.author_id.isnot(None)).group_by(UrlSchema.author_id).all()
     data = []
@@ -137,6 +141,7 @@ def get_frequent_users():
     return data
 
 def get_popular_links():
+    # Returns most popular links depending on the number of clicks 
      pop_link  = db.session.query(UrlSchema).filter(UrlSchema.clicks>=5).all()
      data = []
      for link in pop_link:
@@ -144,6 +149,7 @@ def get_popular_links():
      return data
 
 def get_recent_links():
+    # function will return the most recent links according to the date they where added
     now = datetime.datetime.now()
     recent_link = db.session.query(UrlSchema).order_by(desc(UrlSchema.id)).limit(5)
     data = []
@@ -152,7 +158,9 @@ def get_recent_links():
     return data
 
 @app.route('/delete/', methods=['GET','POST'])
+@login_required
 def delete_link():
+    # function will enable a Logged in User to delete any url of there choice from the table
     id = request.form.get('link-id')
     url = UrlSchema.query.filter_by(id=id).first()
     db.session.delete(url)
@@ -160,7 +168,9 @@ def delete_link():
     return redirect(url_for('create_short'))
 
 @app.route('/change-status/<url_id>')
+@login_required
 def change_status(url_id):
+    # Allows activating a deactivating a link to logged in Users
     url = UrlSchema.query.filter_by(id=url_id).first()
     url.active = not url.active
     db.session.commit()
@@ -169,6 +179,7 @@ def change_status(url_id):
 @app.route('/edit/', methods=['GET','POST'])
 @login_required
 def update():
+    # Enables user to change target Url but maintain the short Url
     id = request.form.get('url-id')
     update_form = UpdateUrlForm()
     if request.method=='POST'and update_form.validate_on_submit():
