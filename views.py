@@ -3,7 +3,6 @@ import short_url as sh_url
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from sqlalchemy.sql import func, desc
 import timeago, datetime
-from bs4 import BeautifulSoup
 from config import POSTS_PER_PAGE
 from app import app
 from forms.forms import UrlForm, LoginForm, UpdateUrlForm, RegisterForm
