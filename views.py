@@ -156,8 +156,7 @@ def get_recent_links():
         data.append({'rec_link': link.short_url, 'url_title': link.title, 'date_added': (timeago.format(link.timestamp)) })
     return data
 
-@app.route('/delete/', methods=['GET','POST'])
-@login_required
+@app.route('/delete', methods=['GET','POST'])
 def delete_link():
     # function will enable a Logged in User to delete any url of there choice from the table
     id = request.form.get('link-id')
@@ -167,7 +166,6 @@ def delete_link():
     return redirect(url_for('create_short'))
 
 @app.route('/change-status/<url_id>')
-@login_required
 def change_status(url_id):
     # Allows activating a deactivating a link to logged in Users
     url = UrlSchema.query.filter_by(id=url_id).first()
@@ -176,7 +174,6 @@ def change_status(url_id):
     return redirect(url_for('create_short'))
 
 @app.route('/edit/', methods=['GET','POST'])
-@login_required
 def update():
     # Enables user to change target Url but maintain the short Url
     id = request.form.get('url-id')
