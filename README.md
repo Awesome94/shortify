@@ -1,5 +1,5 @@
 
-![Alt text](/static/images/back.jpg?raw=true "Shortify")
+![Alt text](/static/images/shorty.png?raw=true "Shortify")
 
 # Shortify.
 
