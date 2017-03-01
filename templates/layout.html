@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon2.ico') }}">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css?family=Sofia" rel="stylesheet">
+    <script src="{{ url_for('static', filename='js/modal.js') }}"></script>
+    <link   href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css"rel="stylesheet">
+    <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+</head>
+
+<body>
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand text-center" href="#" ><h4>Shortify</h4></a>
+            </div>
+             <div class="collapse navbar-collapse" id="myNavbar">
+                <ul class="nav navbar-nav navbar-right">
+                    {% if current_user.is_authenticated %}
+                    <li><a href="#">Karibu {{current_user.username.upper()}} </a></li>
+                    <li><a href="{{ url_for('logout')}}">Logout</a></li>
+                    {% else %}
+                    <li><a href="#"  data-target="#loginModal"  data-toggle="modal"><span class="glyphicon glyphicon-log-in"></span>Login</a></li>
+                    <li><a href="{{ url_for('register')}}"<span class="glyphicon glyphicon-pencil"></span>Register</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+            <!--/.nav-collapse -->
+        </div>
+    </nav>
+    <div id="myCarousel" class="carousel slide" data-ride="carousel">
+    <!-- Indicators -->
+    <!-- Wrapper for slides -->
+    <div class="carousel-inner" role="listbox">
+      <div class="item active">
+        <!--<img src="https://placehold.it/1200x550?text=Awesome" alt="Image">-->
+        <img src="{{ url_for('static', filename='images/back.jpg') }}" alt="Image">
+        <div class="carousel-caption" style="top: 20%;">
+          <form action= '/' method="post"  >
+          <h1> Shortify</h1>
+    
+          <h3> More than Just a Url Shortener</h3>
+           <div class="input-group">
+                    {{  form.hidden_tag() }}
+                    {{  form.url(class="form-control input-lg", placeholder="Long URLs") }}
+                    <span class="input-group-btn">
+                        {{ form.submit(class="btn btn-success btn-lg") }}
+                    </span>
+           </div>
+         <br>
+        <div class="con1 col-xs-4"> </div>
+           <div class="input-group">
+                <div class="con1 col-xs-4"> </div>
+                {% if current_user.is_authenticated %}
+                {{  form.vanity_string(class="form-control", placeholder="Add custom short Url") }} 
+                {% endif %}
+                </form>
+                <br>
+{% with errors = get_flashed_messages(category_filter=["error"]) %}
+{% if errors %}
+<div class="alert alert-danger">
+  <a class="close" href="#">×</a>
+  <ul>
+    {%- for msg in errors %}
+    <li>{{ msg }}</li>
+    {% endfor -%}
+    {% else %}
+    <div class="flashes">
+  {% for message in get_flashed_messages()%}
+    {{ message }}
+  {% endfor %}
+</div>
+  </ul>
+</div>
+{% endif %}
+{% endwith %}
+ <div class="row" >
+    <div class = "shorturl">
+        {% if url_short %}
+            <h3>Your Shortened URL is</h3> <a href="{{ url_short }}"> {{ url_short }} </a>
+        {% endif %}
+     </div>
+   </div>      
+  </div>
+ </div>
+</div>
+ 
+    <div class={% if current_user.is_authenticated %} page2 {% else %} page {% endif %}>
+        {% block content %} 
+        {% endblock %}
+    </div>
+    <br>
+     <footer class="container-fluid text-center">
+             <p> &copy; Awesome</p>
+        </footer>
+    </body>
+</html>

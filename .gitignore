@@ -1,0 +1,11 @@
+*.pyc
+*.sqlite
+.DS_Store
+.coverage
+.env
+venv
+tmp
+env.sh
+:memory
+__pycache__
+@test_9050_tmp

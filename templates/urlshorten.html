@@ -1,0 +1,41 @@
+<div class="container">
+    <div class="row">
+        <div class="col-lg-offset-5">
+           <h1><span style="font-weight:bold">Shortify</span></h1>
+        </div>
+    </div>
+    </div>
+<br>
+    <div class="container">
+        <form action= '/' method="post"  >
+            <div class="col-xs-5 col-lg-offset-3">
+                <div class="input-group">
+                    {{  form.hidden_tag() }}
+                    {{  form.url(class="form-control input-lg", placeholder="Long URLs") }}
+                    <span class="input-group-btn">
+                    {{ form.submit(class="btn btn-success btn-lg") }}
+                    </span>
+                </div>
+<br>
+  <div class="container">
+    <form action= '/' method="post"  >
+        <div class="col-xs-5 col-lg-offset-1">
+            <div class="input-group">
+                {% if current_user.is_authenticated %}
+                {{  form.vanity_string(class="form-control", placeholder="Add custom short Url") }} 
+                {% endif %}
+                </form>
+                </form>
+            </div>
+        </div>          
+    </div>
+</div>
+
+<div class="row" >
+    <div class = "shorturl">
+        {% if url_short %}
+            Your Shortened URL is <a href="{{ url_short }}"> <h2>{{ url_short }}</h2> </a>
+        {% endif %}
+        </div>
+     </div>
+</div>

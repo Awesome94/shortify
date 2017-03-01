@@ -1,0 +1,56 @@
+
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon2.ico') }}">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/regstyle.css') }}">
+    <link href="https://fonts.googleapis.com/css?family=Sofia" rel="stylesheet">
+    </head>
+    <body>   
+<div class="container ">
+<div class="text">
+  <h1>Register.</h1>
+  <h6> Fill in your details.</h6>
+  <br>
+  
+   <a href="{{ url_for('create_short') }}"><button2 type="submit">HOME</button2></a>
+  </div>
+
+<div class="forms">
+    <div class="flashes">
+      {% for message in get_flashed_messages() %}
+    {{ message }}
+  {% endfor %}
+    </div>
+  <form action="{{ url_for('register') }}" method=post>
+  
+ {{ register_form.hidden_tag() }}
+
+<div class="username">
+{{ register_form.username(placeholder="Enter Username", tabindex="2", class="form-control", autocomplete="off") }}  
+</div> 
+ <div class="email">  
+{{ register_form.email(placeholder="Enter Email", tabindex="2", class="form-control", autocomplete="off") }}
+  </div>  
+
+<div class="password">
+{{ register_form.password(placeholder="Password", tabindex="2", class="form-control", autocomplete="off") }}  
+</div>
+
+<div class="confirm">
+{{ register_form.password2(placeholder="Confirm Password", tabindex="2", class="form-control", autocomplete="off") }} 
+  </div>
+
+<div class="regbtn">
+<button type="submit">Register</button>  
+</div>
+</div> 
+  </form>
+  </div>
+</body>
+</html>
+

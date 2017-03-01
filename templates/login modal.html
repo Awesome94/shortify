@@ -1,0 +1,56 @@
+<!-- Login and registration modal -->
+<div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content login-modal">
+			<div class="modal-header login-modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title text-center" id="loginModalLabel">Log in.</h4>
+			</div>
+			<div class="modal-body">
+				<div class="text-center">
+					<div role="tabpanel" class="login-tab">
+						<!-- Nav tabs -->
+						<ul class="nav nav-tabs" role="tablist">
+							<li role="presentation"><a id="signin-taba" href="#login" aria-controls="login" role="tab" data-toggle="tab">Log In</a></li>
+							<!--<li role="presentation" class="active"><a id="signin-taba" href="#home" aria-controls="home" role="tab" data-toggle="tab">Log In</a></li>-->
+						</ul>
+
+						<!-- Tab panes -->
+						<div class="tab-content">
+							<div role="tabpanel" class="tab-pane active text-center" id="login">
+								&nbsp;&nbsp;
+								<span id="login_fail" class="response_error" style="display: none;">Login failed, please try again.</span>
+<div class="clearfix"></div>
+
+<form action="{{ url_for('login') }}" method="post">
+	{{ login_form.hidden_tag()}}
+		<div class="modal-body">
+		{{ login_form.email(placeholder="Enter Email", tabindex="2", class="form-control", autocomplete="off") }}
+			
+	</div>
+	
+	{{ login_form.hidden_tag()}}
+	<div class="form-group">
+		<div class="modal-body">
+			{{ login_form.password(placeholder="Enter password", tabindex="2", class="form-control", autocomplete="off") }}
+		</div>
+	</div>
+	<button type="submit" id="submit" class="btn btn-block bt-login" data-loading-text="Signing In....">Login</button>
+	<div class="clearfix"></div>
+</form>
+</div>
+
+
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+</div>
+</div>
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
