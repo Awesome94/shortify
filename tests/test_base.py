@@ -1,7 +1,6 @@
 from flask_testing import TestCase
 from app import app
 from config import TestingConfig
-# from app import app, db
 from models.models import User, db
 
 class BaseTestConfig(TestCase):
