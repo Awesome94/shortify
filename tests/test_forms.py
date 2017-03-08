@@ -8,7 +8,6 @@ class TestUserForms(BaseTestConfig):
     based on the data entered.
     
     '''
-    pass
 
     def test_validate_success_register_form(self):
         form = RegisterForm(username='awesome', 
