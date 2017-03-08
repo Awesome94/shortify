@@ -7,23 +7,9 @@ import datetime
 from app import app
 from flask_login import LoginManager, UserMixin
 
-# app = Flask(__name__)
-# app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://{DB_USER}:{DB_PASS}@{DB_ADDR}/{DB_NAME}".format(DB_USER="pg_db_username", DB_PASS="pg_db_password", DB_ADDR="pg_db_hostname", DB_NAME="pg_db_name")
 db = SQLAlchemy(app)
 
-class CRUD():
-    def add(self, resource):
-        db.session.add(resource)
-        return db.session.commit()
-    
-    def update(self):
-        return db.session.commit()
-    
-    def delete(self):
-        db.session.delete(resource)
-        return db.session.commit()
-
-class User(UserMixin, db.Model, CRUD):
+class User(UserMixin, db.Model):
     __tablename__="user"
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(100))
@@ -53,26 +39,6 @@ class User(UserMixin, db.Model, CRUD):
     def __repr__(self):
         return '<User {}>'.format(self.username)
 
-class UsersSchema(Schema):
-    not_blank = validate.Length(min=1, error='Field cannot be blank')
-    id = fields.Integer(dump_only=True)
-    email = fields.Email(validate=not_blank)
-    username = fields.String(validate=not_blank)
-    password = fields.String(validate=not_blank)
-     
-     
-     #self links
-    def get_top_level_links(self, data, many):
-        if many:
-            self_link = "/users/"
-        else:
-            self_link = "/users/{}".format(data['id'])
-        return {'self': self_link}
- 
-    class Meta:
-        type_ = 'users'
-
-  
 class UrlSchema(db.Model):
     __tablename__ = "urlsSchema"
     id = db.Column(db.Integer, primary_key=True)
@@ -87,31 +53,7 @@ class UrlSchema(db.Model):
    
     def __init__(self, long_url):
         self.long_url = long_url
-        # self.short_url = short_url
 
     def __repr__(self):
         return '<url {}>'.format(self.short_url)
-
-
-class LinkSchema(Schema):
-    not_blank = validate.Length(min=1, error='Field cannot be blank')
-    id = fields.Integer(dump_only=True)
-    title = fields.String()
-    long_url = fields.String(validate=not_blank)
-    short_url = fields.String(validate=not_blank)
-    active = fields.Boolean()
-    clicks = fields.Integer()
-    aurthor_id = fields.Integer()
-    timestamp = fields.DateTime()
-     
-    #self links
-    def get_top_level_links(self, data, many):
-        if many:
-            self_link = "/links/"
-        else:
-            self_link = "/links/{}".format(data['id'])
-        return {'self': self_link}
- 
-    class Meta:
-        type_ = 'links'
 

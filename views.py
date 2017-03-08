@@ -6,7 +6,7 @@ import timeago, datetime
 from config import POSTS_PER_PAGE
 from app import app
 from forms.forms import UrlForm, LoginForm, UpdateUrlForm, RegisterForm
-from models.models import User, UrlSchema, db, LinkSchema, UsersSchema
+from models.models import User, UrlSchema, db
 from functools import wraps
 
 
@@ -36,7 +36,6 @@ def create_short(page=1):
     register_form = RegisterForm()
     form = UrlForm()
     url = form.url.data 
-    # print (url)
     custom_url = form.vanity_string.data
     current_id = current_user.get_id()
     
@@ -111,8 +110,6 @@ def login():
 def display(url_short):
     # Redirects the short Url to the original URL
     original_url = UrlSchema.query.filter_by(short_url=url_short).first()
-    # db.session.query(UrlSchema).filter_by(short_url=url_short).first()
-    print(original_url)
     original_url.clicks = original_url.clicks+1
     db.session.add(original_url)
     db.session.commit()
