@@ -4,8 +4,6 @@ $(document).ready(function(){
 	    $('#signup-taba').tab('show');
 	});	
 	
-	// {{ update_form.submit(class="btn btn-success btn-md") }}
-
 
 	$(document).on('click','.signin-tab',function(e){
 	   	e.preventDefault();

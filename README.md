@@ -10,7 +10,7 @@ Shortify is a URL shortening service. The application accepts long URLs and turn
 
 #Application Features.
 # For normal Users
-1. Shortens a long URL to a much shorter URL that is easier to remember 
+1. Shortens a long URL to a much shorter URL that is easier to remember
 2. Provides a list for most active Users based on their number of shortened URLs
 3. Provides a list of  popular shortened URLs by how many times they have been clicked.
 4. Provides a list of shortened URLs by how recent they were created.
@@ -35,7 +35,7 @@ Shortify is a URL shortening service. The application accepts long URLs and turn
 3. Create a Virtual enviroment and Install the dependencies.<br/>
 ```$ mkvirtualenv shortify.```<br/>
 ```$ pip install -r requirements.txt.```
-    
+
 4.  Setup database and seed data.<br/>
 set_up postgres  on your local using the following steps  http://bit.ly/1v7Cu0l<br/>
 ``` $ python manage.py db init ```</br>

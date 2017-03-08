@@ -1,5 +1,6 @@
 from .test_base import BaseTestConfig
 from flask import url_for
+from models.models import db
 
 from models.models import User 
 

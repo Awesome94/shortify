@@ -2,6 +2,12 @@ from .test_base import BaseTestConfig
 from forms.forms import UrlForm, LoginForm, UpdateUrlForm, RegisterForm
 
 class TestUserForms(BaseTestConfig):
+    ''' 
+    This class will inherit properties from the BaseTestConfig class 
+    to test whether the form passes or fails validation 
+    based on the data entered.
+    
+    '''
     pass
 
     def test_validate_success_register_form(self):

@@ -6,7 +6,7 @@ import timeago, datetime
 from config import POSTS_PER_PAGE
 from app import app
 from forms.forms import UrlForm, LoginForm, UpdateUrlForm, RegisterForm
-from models.models import User, UrlSchema, db, LinkSchema, UsersSchema
+from models.models import User, UrlSchema, db
 from functools import wraps
 
 
@@ -36,7 +36,6 @@ def create_short(page=1):
     register_form = RegisterForm()
     form = UrlForm()
     url = form.url.data 
-    # print (url)
     custom_url = form.vanity_string.data
     current_id = current_user.get_id()
     
@@ -111,8 +110,6 @@ def login():
 def display(url_short):
     # Redirects the short Url to the original URL
     original_url = UrlSchema.query.filter_by(short_url=url_short).first()
-    # db.session.query(UrlSchema).filter_by(short_url=url_short).first()
-    print(original_url)
     original_url.clicks = original_url.clicks+1
     db.session.add(original_url)
     db.session.commit()
@@ -156,8 +153,7 @@ def get_recent_links():
         data.append({'rec_link': link.short_url, 'url_title': link.title, 'date_added': (timeago.format(link.timestamp)) })
     return data
 
-@app.route('/delete/', methods=['GET','POST'])
-@login_required
+@app.route('/delete', methods=['GET','POST'])
 def delete_link():
     # function will enable a Logged in User to delete any url of there choice from the table
     id = request.form.get('link-id')
@@ -167,7 +163,6 @@ def delete_link():
     return redirect(url_for('create_short'))
 
 @app.route('/change-status/<url_id>')
-@login_required
 def change_status(url_id):
     # Allows activating a deactivating a link to logged in Users
     url = UrlSchema.query.filter_by(id=url_id).first()
@@ -176,7 +171,6 @@ def change_status(url_id):
     return redirect(url_for('create_short'))
 
 @app.route('/edit/', methods=['GET','POST'])
-@login_required
 def update():
     # Enables user to change target Url but maintain the short Url
     id = request.form.get('url-id')

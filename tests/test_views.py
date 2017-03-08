@@ -8,10 +8,9 @@ class TestUserViews(BaseTestConfig):
     
     def test_index_page_loads(self):
         response = self.client.get('/index')
-        # self.assertIn(response.data)
+        self.assertIn(b'Shortify', response.data)
 
     def test_correct_login(self):
-        #ensure that login works correctly with correct credentials 
         with self.client:
             response = self.client.post(
                 '/login',
@@ -29,7 +28,7 @@ class TestUserViews(BaseTestConfig):
                 follow_redirects=True
             )
             new_count_users = User.query.all()
-            self.assertNotEqual(len(users), len(new_count_users))
+            self.assertEqual(len(new_count_users), len(users)+1)
     
     def test_logout_route_requires_login(self):
         response = self.client.get('/logout', follow_redirects=True)
