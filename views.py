@@ -7,7 +7,6 @@ from config import POSTS_PER_PAGE
 from app import app
 from forms.forms import UrlForm, LoginForm, UpdateUrlForm, RegisterForm
 from models.models import User, UrlSchema, db
-from functools import wraps
 
 
 login_manager = LoginManager()
@@ -17,14 +16,6 @@ login_manager.init_app(app)
 def load_user(user_id):
     #loads the user when needed for login.
     return User.query.get(int(user_id))
-
-def login_required(f):
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        if current_user.is_anonymous:
-            return redirect(url_for('create_short', next=request.url))
-        return f(*args, **kwargs)
-    return decorated_function
 
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/index', methods=['GET', 'POST'])
@@ -119,7 +110,7 @@ def display(url_short):
         return render_template('error-Inactive.html')
 
 @app.route('/logout')
-# @login_required
+@login_required
 def logout():
     logout_user()
     message = Markup("<h5>Logged Out Successfully.</h5>")
@@ -153,7 +144,8 @@ def get_recent_links():
         data.append({'rec_link': link.short_url, 'url_title': link.title, 'date_added': (timeago.format(link.timestamp)) })
     return data
 
-@app.route('/delete', methods=['GET','POST'])
+@app.route('/delete', methods=['POST'])
+@login_required
 def delete_link():
     # function will enable a Logged in User to delete any url of there choice from the table
     id = request.form.get('link-id')
@@ -163,6 +155,7 @@ def delete_link():
     return redirect(url_for('create_short'))
 
 @app.route('/change-status/<url_id>')
+@login_required
 def change_status(url_id):
     # Allows activating a deactivating a link to logged in Users
     url = UrlSchema.query.filter_by(id=url_id).first()
@@ -171,6 +164,7 @@ def change_status(url_id):
     return redirect(url_for('create_short'))
 
 @app.route('/edit/', methods=['GET','POST'])
+@login_required
 def update():
     # Enables user to change target Url but maintain the short Url
     id = request.form.get('url-id')
@@ -178,6 +172,9 @@ def update():
     if request.method=='POST'and update_form.validate_on_submit():
         url = UrlSchema.query.filter_by(id=id).first()
         url.long_url = update_form.long_url.data
+        url_title = url.long_url.split("/")[2:3]
+        """removing curly brackets from the url title """
+        url.title = (', '.join(url_title))
         db.session.commit()
         flash('Your changes have been saved.')
     return redirect (url_for('create_short'))
