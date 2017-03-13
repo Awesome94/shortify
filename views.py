@@ -119,7 +119,7 @@ def logout():
 def get_frequent_users():
     # Returns most frequent or influential users depending on the number of urls they have shortened.
     results = db.session.query(UrlSchema.author_id, 
-        db.func.count(UrlSchema.author_id).label('count')).filter(UrlSchema.author_id.isnot(None)).group_by(UrlSchema.author_id).all()
+        db.func.count(UrlSchema.author_id>5).label('count')).filter(UrlSchema.author_id.isnot(None)).group_by(UrlSchema.author_id).order_by(desc('count')).limit(5)
     data = []
     for result in results:
         user = User.query.filter_by(id=result.author_id).first()
@@ -128,7 +128,7 @@ def get_frequent_users():
 
 def get_popular_links():
     # Returns most popular links depending on the number of clicks 
-     pop_link  = db.session.query(UrlSchema).filter(UrlSchema.clicks>=5).all()
+     pop_link  = db.session.query(UrlSchema).filter(UrlSchema.clicks>=5).order_by(desc(UrlSchema.clicks)).limit(5)
      data = []
      for link in pop_link:
          data.append({'url': link.short_url, 'clicks': link.clicks, 'url_title':link.title})
