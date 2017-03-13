@@ -33,23 +33,20 @@ def create_short(page=1):
     data = UrlSchema.query.filter_by(author_id=current_id).order_by(desc(UrlSchema.id)).paginate(page, POSTS_PER_PAGE, False)
     url_short = None
 
-    if request.method=='POST' and form.validate_on_submit():
-        if len(url)>100:
-            flash("Invalid entry Url too long!!!.", 'error')
-        else:                                
-            new_long_url=UrlSchema(url) 
-            db.session.add(new_long_url)
-            db.session.commit()
-            new_long_url.author_id = current_id
-            #adding url title by spliting the original long url
-            url_title = url.split("/")[2:3]
-            """removing curly brackets from the url title """
-            new_long_url.title = (', '.join(url_title))
-            # if there is no custom url the short url will be genrated randomly
-            new_long_url.short_url = custom_url if custom_url else sh_url.encode_url(new_long_url.id)
-            url_short = new_long_url.short_url
-            db.session.commit()
-            form = UrlForm(formdata=None)
+    if request.method=='POST' and form.validate_on_submit():                          
+        new_long_url=UrlSchema(url[0:80]) 
+        db.session.add(new_long_url)
+        db.session.commit()
+        new_long_url.author_id = current_id
+        #adding url title by spliting the original long url
+        url_title = url.split("/")[2:3]
+        """removing curly brackets from the url title """
+        new_long_url.title = (', '.join(url_title))
+        # if there is no custom url the short url will be genrated randomly
+        new_long_url.short_url = custom_url if custom_url else sh_url.encode_url(new_long_url.id)
+        url_short = new_long_url.short_url
+        db.session.commit()
+        form = UrlForm(formdata=None)
 
     # get frequent users
     frequent_users = get_frequent_users()
