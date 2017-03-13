@@ -18,8 +18,7 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 
 @app.route('/', methods=['GET', 'POST'])
-@app.route('/index', methods=['GET', 'POST'])
-@app.route('/index/<int:page>', methods=['GET', 'POST'])
+@app.route('/<int:page>', methods=['GET', 'POST'])
 def create_short(page=1):
     '''creating a short url from a given long url'''
     login_form = LoginForm()
